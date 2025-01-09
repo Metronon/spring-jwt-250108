@@ -79,7 +79,32 @@ public class Rq {
                 .orElse(null);
     }
 
+    public void deleteCookie(String name) {
+        ResponseCookie cookie = ResponseCookie.from(name, null)
+                .path("/")
+                .domain("localhost")
+                .sameSite("Strict")
+                .secure(true)
+                .httpOnly(true)
+                .maxAge(0)
+                .build();
+
+        resp.addHeader("Set-Cookie", cookie.toString());
+    }
+
     public void setHeader(String name, String value) {
         resp.setHeader(name, value);
+    }
+
+    public String getHeader(String name) {
+        return req.getHeader(name);
+    }
+
+    public Optional<Member> findByActor() {
+        Member actor = getActor();
+
+        if (actor == null) return Optional.empty();
+
+        return memberService.findById(actor.getId());
     }
 }

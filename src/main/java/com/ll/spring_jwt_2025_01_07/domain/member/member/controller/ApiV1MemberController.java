@@ -89,12 +89,22 @@ public class ApiV1MemberController {
         );
     }
 
+    @DeleteMapping("/logout")
+    @Transactional(readOnly = true)
+    public RsData<Void> logout() {
+        rq.deleteCookie("accessToken");
+        rq.deleteCookie("apiKey");
+        return new RsData<>(
+                "200-1",
+                "로그아웃 되었습니다."
+        );
+    }
+
     @GetMapping("/me")
     @Transactional(readOnly = true)
     public MemberDto me() {
-        Member actor = rq.getActor();
-        Member member = memberService.findById(actor.getId()).get();
+        Member actor = rq.findByActor().get();
 
-        return new MemberDto(member);
+        return new MemberDto(actor);
     }
 }
